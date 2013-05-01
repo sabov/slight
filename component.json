@@ -1,0 +1,7 @@
+{
+  "name": "Slight",
+  "version": "0.1",
+  "dependencies": {
+    "bootstrap.css": "~2.1.1"
+  }
+}

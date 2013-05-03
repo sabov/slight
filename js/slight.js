@@ -14,25 +14,40 @@
     var Slight = function(el) {
         this.$el = $(el);
         this.$slides = this.$el.find('.slide');
-        console.log(this.$el);
+        this.currSlide = 0;
         this.initSlides();
     };
 
     Slight.prototype = {
         initSlides: function() {
+            var slideHeight = this.$slides.first().outerHeight();
+            var windowHeight = window.innerHeight;
+            var windowWidth = window.innerWidth;
+            var slideScale = windowHeight/slideHeight;
+            console.log([windowHeight, slideHeight, slideScale]);
             this.$slides.each(function(index, slide) {
-                this.showSlide(slide);
+                this.showSlide(slide, slideScale- 0.1, windowWidth/2, windowHeight/2);
             }.bind(this));
         },
-        showSlide: function(slide) {
-            console.log(slide);
+        showSlide: function(slide, slideScale, x, y) {
+            $(slide).css({
+                transform: 'translate(-50%, -50%)' +
+                    translate({
+                        x: x,
+                        y: y,
+                        z: 0
+                    }) + scale(slideScale),
+                opacity: '1'
+            });
+        },
+        hideSlide: function(slide) {
             $(slide).css({
                 transform: translate({
-                    x: 50,
+                    x: 2500,
                     y: 50,
                     z: 0
                 }) + scale(0.5),
-                opacity: '1'
+                opacity: '0'
             });
         },
         moveTo: function(index) {
@@ -49,6 +64,8 @@
         }
     };
     $(function() {
-        new Slight('.slides');
+        S = new Slight('.slides');
+        $('.prevSlideBtn').on('click', Slight.prev);
+        $('.nextSlideBtn').on('click', Slight.next);
     });
 })();

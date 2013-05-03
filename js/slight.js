@@ -16,6 +16,7 @@
         this.$slides = this.$el.find('.slide');
         this.currSlide = 0;
         this.initSlides();
+        this.initWindowResize();
     };
 
     Slight.prototype = {
@@ -24,10 +25,20 @@
             var windowHeight = window.innerHeight;
             var windowWidth = window.innerWidth;
             var slideScale = windowHeight/slideHeight;
-            console.log([windowHeight, slideHeight, slideScale]);
             this.$slides.each(function(index, slide) {
                 this.showSlide(slide, slideScale- 0.1, windowWidth/2, windowHeight/2);
             }.bind(this));
+        },
+        initWindowResize: function() {
+            var tId;
+            var self = this;
+            $(window).resize(function() {
+                if(tId) window.clearTimeout(tId);
+                tId = window.setTimeout(function() {
+                    self.initSlides();
+                }, 300);
+            });
+
         },
         showSlide: function(slide, slideScale, x, y) {
             $(slide).css({
@@ -44,28 +55,41 @@
             $(slide).css({
                 transform: translate({
                     x: 2500,
-                    y: 50,
+                    y: 0,
                     z: 0
                 }) + scale(0.5),
                 opacity: '0'
             });
         },
         moveTo: function(index) {
+            var slideHeight = this.$slides.first().outerHeight();
+            var windowHeight = window.innerHeight;
+            var windowWidth = window.innerWidth;
+            var slideScale = windowHeight/slideHeight;
+            this.$slides.each(function(index, slide) {
+                if(this.currSlide <= index) {
+                    this.showSlide(slide, slideScale- 0.1, windowWidth/2, windowHeight/2);
+                } else {
+                    this.hideSlide(slide);
+                }
+            }.bind(this));
+            this.currSlide = index;
 
         },
         shift: function(shift) {
-
+            this.moveTo(this.currSlide + shift);
         },
         next: function() {
             this.shift(1);
         },
         prev: function() {
+            console.log('prev');
             this.shift(-1);
         }
     };
     $(function() {
         S = new Slight('.slides');
-        $('.prevSlideBtn').on('click', Slight.prev);
-        $('.nextSlideBtn').on('click', Slight.next);
+        $('.prevSlideBtn').on('click', S.prev.bind(S));
+        $('.nextSlideBtn').on('click', S.next.bind(S));
     });
 })();

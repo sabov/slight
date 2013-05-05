@@ -14,6 +14,7 @@
     var Slight = function(el) {
         this.$el = $(el);
         this.$slides = this.$el.find('.slide');
+        this.slideHeight = this.$slides.first().outerHeight();
         this.currSlide = 0;
         this.initSlides();
         this.initWindowResize();
@@ -21,13 +22,21 @@
 
     Slight.prototype = {
         initSlides: function() {
-            var slideHeight = this.$slides.first().outerHeight();
+            this.setPosition();
+            var length = this.$slides.length;
+            this.$slides.each(function(index, slide) {
+                console.log([slide, length-index]);
+                this.showSlide(slide, length - index);
+            }.bind(this));
+        },
+        setPosition: function() {
             var windowHeight = window.innerHeight;
             var windowWidth = window.innerWidth;
-            var slideScale = windowHeight/slideHeight;
-            this.$slides.each(function(index, slide) {
-                this.showSlide(slide, slideScale- 0.1, windowWidth/2, windowHeight/2);
-            }.bind(this));
+            this.position = {
+                top: windowHeight/2,
+                left: windowWidth/2,
+                scale: windowHeight/this.slideHeight-0.1
+            };
         },
         initWindowResize: function() {
             var tId;
@@ -40,15 +49,17 @@
             });
 
         },
-        showSlide: function(slide, slideScale, x, y) {
+        showSlide: function(slide, index) {
+            var p = this.position;
             $(slide).css({
                 transform: 'translate(-50%, -50%)' +
                     translate({
-                        x: x,
-                        y: y,
-                        z: 0
-                    }) + scale(slideScale),
-                opacity: '1'
+                        x: p.left,
+                        y: p.top,
+                        z: index
+                    }) + scale(p.scale),
+                opacity: '1',
+                'z-index': index
             });
         },
         hideSlide: function(slide) {

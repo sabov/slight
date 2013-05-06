@@ -15,6 +15,8 @@
         this.$el = $(el);
         this.$slides = this.$el.find('.slide');
         this.slideHeight = this.$slides.first().outerHeight();
+        this.slideWidth = this.$slides.first().outerWidth();
+        this.state = '';
         this.currSlide = 0;
         this.initSlides();
         this.initWindowResize();
@@ -93,11 +95,43 @@
         },
         prev: function() {
             this.shift(-1);
+        },
+        toList: function() {
+            if(this.state == 'list') {
+                this.moveTo(this.currSlide);
+                this.state = '';
+            } else {
+                var windowHeight = window.innerHeight;
+                var windowWidth = window.innerWidth;
+                var slideScale = windowWidth/(3*this.slideWidth)-0.1;
+                var shift = windowWidth/3;
+                var left = 200;
+                var top = 200;
+                this.$slides.each(function(index, slide) {
+                    if(index !== 0 && index % 3 === 0) {
+                        left = 200;
+                        top += 300;
+                    }
+                    $(slide).css({
+                        transform: 'translate(-50%, -50%)' +
+                            translate({
+                                x: left,
+                                y: top,
+                                z: 0
+                            }) + scale(slideScale) +
+                            rotate(0),
+                        opacity: '1'
+                    });
+                    left += shift;
+                });
+                this.state = 'list';
+            }
         }
     };
     $(function() {
         S = new Slight('.slides');
         $('.prevSlideBtn').on('click', S.prev.bind(S));
         $('.nextSlideBtn').on('click', S.next.bind(S));
+        $('.toListView').on('click', S.toList.bind(S));
     });
 })();

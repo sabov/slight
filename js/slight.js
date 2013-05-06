@@ -27,6 +27,7 @@
             this.setPosition();
             this.$slides.each(function(index, slide) {
                 this.showSlide(slide, index);
+                $(slide).on('click', this.moveTo.bind(this, index));
             }.bind(this));
         },
         setPosition: function() {
@@ -35,7 +36,7 @@
             this.position = {
                 top: windowHeight/2,
                 left: windowWidth/2,
-                scale: windowHeight/this.slideHeight-0.1
+                scale: windowHeight/this.slideHeight-0.2
             };
         },
         initWindowResize: function() {
@@ -51,6 +52,7 @@
 
         },
         showSlide: function(slide, index) {
+            this.state = '';
             var angle = index == this.currSlide? 0 : Math.floor((Math.random()*10)-6);
             var p = this.position;
             $(slide).css({
@@ -97,20 +99,20 @@
             this.shift(-1);
         },
         toList: function() {
+            var self = this;
             if(this.state == 'list') {
                 this.moveTo(this.currSlide);
-                this.state = '';
             } else {
                 var windowHeight = window.innerHeight;
                 var windowWidth = window.innerWidth;
-                var slideScale = windowWidth/(3*this.slideWidth)-0.1;
+                var slideScale = windowWidth/(3*(this.slideWidth + 200));
                 var shift = windowWidth/3;
-                var left = 200;
-                var top = 200;
+                var left = shift/2;
+                var top = (this.slideHeight+100) * slideScale/2;
                 this.$slides.each(function(index, slide) {
                     if(index !== 0 && index % 3 === 0) {
-                        left = 200;
-                        top += 300;
+                        left = shift/2;
+                        top += (self.slideHeight+100) * slideScale;
                     }
                     $(slide).css({
                         transform: 'translate(-50%, -50%)' +

@@ -3,7 +3,7 @@ body, html{
   background-color: #F0F0F0;
   height: 100%;
   min-height: 100%;
-  overflow: hidden;
+  overflow-y: scroll;
 }
 
 .slides {
@@ -14,7 +14,6 @@ body, html{
 .slides-holder {
   height: 100%;
   width: 100%;
-  overflow: hidden;
 }
 
 .slide {
@@ -22,8 +21,9 @@ body, html{
   height: 600px;
   width: 800px;
   padding: 30px;
-  /*box-shadow: 1px 1px 3px rgba(0,0,0,0.2);*/
+  /*box-shadow: 2px 1px 3px rgba(0,0,0,0.2);*/
   border: 20px solid #ffffff;
+  cursor: pointer;
 
   color: #666666;
 
@@ -37,7 +37,7 @@ body, html{
 
 
   opacity: 0;
-  transition: all 2000ms ease-in-out 1000ms;
+  transition: all 500ms ease-in-out 1000ms;
   -moz-transition: all ease-in-out 1s; /* Firefox 4 */
   -webkit-transition: transform .8s; /* Safari and Chrome */
   -o-transition: transform .3s; /* Opera */
@@ -51,6 +51,7 @@ body, html{
 
 .slides-controls {
   position: absolute;
+  z-index: 1111;
 }
 
 .arrow {

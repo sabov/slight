@@ -1,5 +1,7 @@
 (function() {
 
+    /*   Helpers   */
+
     var translate = function (t) {
         return " translate3d(" + t.x + "px," + t.y + "px," + t.z + "px) ";
     };
@@ -13,24 +15,31 @@
 
     var Slight = function(el) {
         this.$el = $(el);
-        this.$slides = this.$el.find('.slide');
-        this.slideHeight = this.$slides.first().outerHeight();
-        this.slideWidth = this.$slides.first().outerWidth();
-        this.state = '';
-        this.currSlide = 0;
-        this.initSlides();
-        this.initWindowResize();
+        this.slides = this.initSlides('.slide');
+        this.currSlide = null;
+        if(this.slides.length > 0) {
+            var $slide = this.slides[0].$el;
+            this.originalSlideSize = {
+                width: $slide.outerWidth(),
+                height: $slide.outerHeight()
+            };
+            this.initWindowResize();
+        }
     };
 
     Slight.prototype = {
-        initSlides: function() {
-            this.setPosition();
-            this.$slides.each(function(index, slide) {
-                this.showSlide(slide, index);
-                $(slide).on('click', this.moveTo.bind(this, index));
-            }.bind(this));
+        initSlides: function(selector) {
+            var slides = [];
+            var $slides = this.$el.find(selector);
+            $slides.each(function(index, slide) {
+                slides.push({
+                    $el: $(slide),
+                    position: {}
+                });
+            });
+            return slides;
         },
-        setPosition: function() {
+        setPositions: function() {
             var windowHeight = window.innerHeight;
             var windowWidth = window.innerWidth;
             this.position = {
@@ -51,23 +60,23 @@
             });
 
         },
-        showSlide: function(slide, index) {
+        showSlide: function(slide, position) {
             this.state = '';
             var angle = index == this.currSlide? 0 : Math.floor((Math.random()*10)-6);
-            var p = this.position;
+            var p = position;
             $(slide).css({
                 transform: 'translate(-50%, -50%)' +
                     translate({
-                        x: p.left,
-                        y: p.top,
-                        z: 0
+                        x: p.x,
+                        y: p.y,
+                        z: p.z
                     }) + scale(p.scale) +
-                    rotate(angle),
+                    rotate(p.angle),
                 opacity: '1',
-                'z-index': this.$slides.length - index
+                'z-index': p.z
             });
         },
-        hideSlide: function(slide) {
+        /*hideSlide: function(slide) {
             var p = this.position;
             $(slide).css({
                 transform: 'translate(-50%, -50%)' +
@@ -78,7 +87,7 @@
                     }) + scale(p.scale),
                 opacity: '0'
             });
-        },
+        },*/
         moveTo: function(index) {
             this.currSlide = index;
             this.$slides.each(function(i, slide) {

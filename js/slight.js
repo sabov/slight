@@ -13,6 +13,10 @@
         return " scale(" + s + ") ";
     };
 
+    var getRandomAngle = function() {
+        return Math.floor((Math.random()*10)-6);
+    };
+
     var Slight = function(el) {
         this.$el = $(el);
         this.slides = this.initSlides('.slide');
@@ -68,7 +72,7 @@
         },
         toSlidshowView: function() {
             this.slides.forEach(function(slide, index) {
-                var angle = index == this.currSlide? 0 : Math.floor((Math.random()*10)-6);
+                var angle = index == this.currSlide? 0 : getRandomAngle();
                 var windowHeight = window.innerHeight;
                 var windowWidth = window.innerWidth;
                 this.setSlidePosition(slide, {
@@ -129,16 +133,13 @@
         },
         moveTo: function(index) {
             this.currSlide = index;
+            var windowWidth = window.innerWidth;
             this.slides.forEach(function(slide, i) {
-                if(i < index) {
-                    this.setSlidePosition(slide, {
-                        x: window.innerWidth*2
-                    });
-                } else {
-                    this.setSlidePosition(slide, {
-                        x: window.innerWidth/2
-                    });
-                }
+                this.setSlidePosition(slide, {
+                    x: i < index ? windowWidth * 2 : windowWidth / 2,
+                    angle: i == this.currSlide || i == this.currSlide + 1 ? 0 : 
+                        slide.position.angle === 0 ? getRandomAngle() : slide.position.angle
+                });
             }.bind(this));
         },
         shift: function(shift) {
@@ -150,7 +151,6 @@
         prev: function() {
             this.shift(-1);
         }
-        
     };
     $(function() {
         S = new Slight('.slides');

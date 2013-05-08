@@ -2,14 +2,14 @@
 
     /*   Helpers   */
 
-    var translate = function (t) {
+    var translate = function(t) {
         return " translate3d(" + t.x + "px," + t.y + "px," + t.z + "px) ";
     };
-    var rotate = function (r) {
+    var rotate = function(r) {
         return " rotate(" + r + "deg) ";
     };
 
-    var scale = function (s) {
+    var scale = function(s) {
         return " scale(" + s + ") ";
     };
 
@@ -17,12 +17,16 @@
         this.$el = $(el);
         this.slides = this.initSlides('.slide');
         this.currSlide = null;
+        this.viewMode = '';
+        this.itemsInRow = 3;
         if(this.slides.length > 0) {
             var $slide = this.slides[0].$el;
             this.originalSlideSize = {
                 width: $slide.outerWidth(),
-                height: $slide.outerHeight()
+                height: $slide.outerHeight(),
+                margin: 100
             };
+            this.toSlidshowView();
             this.initWindowResize();
         }
     };
@@ -39,32 +43,80 @@
             });
             return slides;
         },
-        setPositions: function() {
-            var windowHeight = window.innerHeight;
-            var windowWidth = window.innerWidth;
-            this.position = {
-                top: windowHeight/2,
-                left: windowWidth/2,
-                scale: windowHeight/this.slideHeight-0.2
-            };
-        },
         initWindowResize: function() {
             var tId;
             var self = this;
             $(window).resize(function() {
                 if(tId) window.clearTimeout(tId);
-                tId = window.setTimeout(function() {
-                    self.setPosition();
-                    self.moveTo(self.currSlide);
-                }, 300);
-            });
-
+                tId = window.setTimeout(this.refresh.bind(this), 300);
+            }.bind(this));
         },
-        showSlide: function(slide, position) {
-            this.state = '';
-            var angle = index == this.currSlide? 0 : Math.floor((Math.random()*10)-6);
-            var p = position;
-            $(slide).css({
+        refresh: function() {
+            if(this.viewMode == 'slideshow') {
+                this.slides.forEach(function(slide) {
+                    this.setSlidePosition(slide, {
+                        scale: this.getWindowScale(),
+                        y: window.innerHeight/2
+                    });
+                }.bind(this));
+            }
+        },
+        getWindowScale: function() {
+            var windowHeight = window.innerHeight;
+            var slideHeight = this.originalSlideSize.height + 2 * this.originalSlideSize.margin;
+            return windowHeight/slideHeight;
+        },
+        toSlidshowView: function() {
+            this.slides.forEach(function(slide, index) {
+                var angle = index == this.currSlide? 0 : Math.floor((Math.random()*10)-6);
+                var windowHeight = window.innerHeight;
+                var windowWidth = window.innerWidth;
+                this.setSlidePosition(slide, {
+                    x: windowWidth/2,
+                    y: windowHeight/2,
+                    z: this.slides.length - index,
+                    scale: windowHeight/(this.originalSlideSize.height +
+                        2 * this.originalSlideSize.margin),
+                    angle: angle
+                });
+            }.bind(this));
+            this.viewMode = 'slideshow';
+        },
+        toListView: function() {
+            var windowHeight = window.innerHeight;
+            var windowWidth = window.innerWidth;
+            var slideWidth = this.originalSlideSize.width + 2 * this.originalSlideSize.margin;
+            var slideHeight = this.originalSlideSize.height + 2 * this.originalSlideSize.margin;
+            var slideScale = windowWidth / (this.itemsInRow * slideWidth);
+            var shift = windowWidth/this.itemsInRow;
+            var left = shift/2;
+            var top = slideHeight * slideScale/2;
+            this.slides.forEach(function(slide, index) {
+                if(index !== 0 && index % this.itemsInRow === 0) {
+                    left = shift/2;
+                    top += slideHeight * slideScale;
+                }
+                this.setSlidePosition(slide, {
+                    x: left,
+                    y: top,
+                    z: 0,
+                    scale: slideScale,
+                    angle: 0
+                });
+                left += shift;
+            }.bind(this));
+            this.viewMode = 'list';
+        },
+        toggleViewMode: function() {
+            if(this.viewMode == 'list') {
+                this.toSlidshowView();
+            } else {
+                this.toListView();
+            }
+        },
+        setSlidePosition: function(slide, position) {
+            var p = $.extend(slide.position, position);
+            slide.$el.css({
                 transform: 'translate(-50%, -50%)' +
                     translate({
                         x: p.x,
@@ -72,29 +124,20 @@
                         z: p.z
                     }) + scale(p.scale) +
                     rotate(p.angle),
-                opacity: '1',
-                'z-index': p.z
+                opacity: '1'
             });
         },
-        /*hideSlide: function(slide) {
-            var p = this.position;
-            $(slide).css({
-                transform: 'translate(-50%, -50%)' +
-                    translate({
-                        x: 2500,
-                        y: p.top,
-                        z: 0
-                    }) + scale(p.scale),
-                opacity: '0'
-            });
-        },*/
         moveTo: function(index) {
             this.currSlide = index;
-            this.$slides.each(function(i, slide) {
+            this.slides.forEach(function(slide, i) {
                 if(i < index) {
-                    this.hideSlide(slide);
+                    this.setSlidePosition(slide, {
+                        x: window.innerWidth*2
+                    });
                 } else {
-                    this.showSlide(slide, i);
+                    this.setSlidePosition(slide, {
+                        x: window.innerWidth/2
+                    });
                 }
             }.bind(this));
         },
@@ -106,43 +149,13 @@
         },
         prev: function() {
             this.shift(-1);
-        },
-        toList: function() {
-            var self = this;
-            if(this.state == 'list') {
-                this.moveTo(this.currSlide);
-            } else {
-                var windowHeight = window.innerHeight;
-                var windowWidth = window.innerWidth;
-                var slideScale = windowWidth/(3*(this.slideWidth + 200));
-                var shift = windowWidth/3;
-                var left = shift/2;
-                var top = (this.slideHeight+100) * slideScale/2;
-                this.$slides.each(function(index, slide) {
-                    if(index !== 0 && index % 3 === 0) {
-                        left = shift/2;
-                        top += (self.slideHeight+100) * slideScale;
-                    }
-                    $(slide).css({
-                        transform: 'translate(-50%, -50%)' +
-                            translate({
-                                x: left,
-                                y: top,
-                                z: 0
-                            }) + scale(slideScale) +
-                            rotate(0),
-                        opacity: '1'
-                    });
-                    left += shift;
-                });
-                this.state = 'list';
-            }
         }
+        
     };
     $(function() {
         S = new Slight('.slides');
         $('.prevSlideBtn').on('click', S.prev.bind(S));
         $('.nextSlideBtn').on('click', S.next.bind(S));
-        $('.toListView').on('click', S.toList.bind(S));
+        $('.toListView').on('click', S.toggleViewMode.bind(S));
     });
 })();

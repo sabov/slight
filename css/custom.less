@@ -1,4 +1,3 @@
-
 body, html{
   background-color: #F0F0F0;
   height: 100%;
@@ -23,7 +22,7 @@ body, html{
   height: 600px;
   width: 800px;
   padding: 30px;
-  box-shadow: 2px 1px 3px rgba(0,0,0,0.2);
+  box-shadow: 1px 1px 4px rgba(0,0,0,0.2);
   border: 20px solid #ffffff;
   cursor: pointer;
 
@@ -37,12 +36,11 @@ body, html{
   background: radial-gradient(ellipse at center,  #ffffff 0%,#e0e0e0 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e0e0e0',GradientType=1 );
 
-
   opacity: 0;
-  transition: all 500ms ease-in-out 1000ms;
-  -moz-transition: all ease-in-out 1s; /* Firefox 4 */
-  -webkit-transition: transform .8s; /* Safari and Chrome */
-  -o-transition: transform .3s; /* Opera */
+  -webkit-transition: all ease-in-out .8s; /* Safari and Chrome */
+  -moz-transition:    all ease-in-out .8s; /* Firefox 4 */
+  -o-transition:      all ease-in-out .8s; /* Opera */
+  transition:         all ease-in-out .8s;
 
   h1 {
     font-size: 70px;
@@ -51,10 +49,81 @@ body, html{
   }
 }
 
+/*     presentation controls     */
+
 .slides-controls {
-  position: absolute;
+  position: fixed;
   z-index: 1111;
+  .btn {
+      font: bold 14px/18px Tahoma, Arial;
+    cursor: pointer;
+    text-decoration: none;
+    color: #464646;
+    display: block;
+    float: left;
+    margin-right: 1px;
+    box-shadow: 
+            inset rgba(0,0,0,0.1) 0 1px 0,
+            inset rgba(255,255,255,0.7) 0 2px 0, 
+            inset rgba(255,255,255,0.7) 0 -1px 0, 
+            inset rgba(255,255,255,0.7) 1px 0 0, 
+            inset rgba(255,255,255,0.7) -1px 0 0,
+            rgba(0,0,0,0.3) 0 3px 0;
+    -moz-box-shadow: 
+            inset rgba(0,0,0,0.1) 0 1px 0,
+            inset rgba(255,255,255,0.7) 0 2px 0, 
+            inset rgba(255,255,255,0.7) 0 -1px 0, 
+            inset rgba(255,255,255,0.7) 1px 0 0, 
+            inset rgba(255,255,255,0.7) -1px 0 0,
+            rgba(0,0,0,0.3) 0 3px 0;
+    -webkit-box-shadow: 
+            inset rgba(0,0,0,0.1) 0 1px 0,
+            inset rgba(255,255,255,0.7) 0 2px 0, 
+            inset rgba(255,255,255,0.7) 0 -1px 0, 
+            inset rgba(255,255,255,0.7) 1px 0 0, 
+            inset rgba(255,255,255,0.7) -1px 0 0,
+            rgba(0,0,0,0.3) 0 3px 0;
+    padding: 2px 10px;
+    min-width: 10px;
+    text-align: center;
+    position: relative;
+    text-shadow: #fff 0 1px 0;
+    background: #cdcdcd;
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255,255,255,0.8)), to(rgba(200,200,200,0.9)));
+    background: -webkit-linear-gradient(top, rgba(255,255,255,0.8), rgba(200,200,200,0.9));
+    background:    -moz-linear-gradient(top, rgba(255,255,255,0.8), rgba(200,200,200,0.9));
+    background:     -ms-linear-gradient(top, rgba(255,255,255,0.8), rgba(200,200,200,0.9));
+    background:      -o-linear-gradient(top, rgba(255,255,255,0.8), rgba(200,200,200,0.9));
+
+    &:hover {
+      box-shadow: 
+            inset rgba(0,0,0,0.1) 0 1px 0,
+            inset rgba(255,255,255,0.7) 0 2px 0, 
+            inset rgba(255,255,255,0.7) 0 -1px 0, 
+            inset rgba(255,255,255,0.7) 1px 0 0, 
+            inset rgba(255,255,255,0.7) -1px 0 0,
+            inset rgba(255,255,255,1) 0 0 15px,
+            rgba(0,0,0,0.2) 0 3px 0;
+    -moz-box-shadow: 
+            inset rgba(0,0,0,0.1) 0 1px 0,
+            inset rgba(255,255,255,0.7) 0 2px 0, 
+            inset rgba(255,255,255,0.7) 0 -1px 0, 
+            inset rgba(255,255,255,0.7) 1px 0 0, 
+            inset rgba(255,255,255,0.7) -1px 0 0,
+            inset rgba(255,255,255,1) 0 0 15px,
+            rgba(0,0,0,0.2) 0 3px 0;
+    -webkit-box-shadow: 
+            inset rgba(0,0,0,0.1) 0 1px 0,
+            inset rgba(255,255,255,0.7) 0 2px 0, 
+            inset rgba(255,255,255,0.7) 0 -1px 0, 
+            inset rgba(255,255,255,0.7) 1px 0 0, 
+            inset rgba(255,255,255,0.7) -1px 0 0,
+            inset rgba(255,255,255,1) 0 0 15px,
+            rgba(0,0,0,0.2) 0 3px 0;
+    }
+  }
 }
+
 
 .arrow {
   width: 100px;
@@ -172,6 +241,37 @@ body, html{
   }
 }
 
+/*------   slide 4   ------*/
+
+#slide-4 {
+  p {
+    font-size: 100px;
+    line-height: 120px;
+    color: #333333;
+    text-align: center;
+    span {
+      color: #CC0000;
+    }
+  }
+  .split {
+    width: 400px;
+    margin: 60px auto 40px;
+    height: 4px;
+    background-color: #777777;
+  }
+}
+
+/*------   slide 5   ------*/
+
+#slide-5 {
+  pre {
+    font-size: 18px;
+    padding-left: 15px;
+    background-color: #FFFFFF;
+  }
+}
+
+
 /*------   slide 6   ------*/
 
 #slide-6 {
@@ -250,37 +350,3 @@ body, html{
     line-height: 40px;
   }
 }
-
-/*------   slide 4   ------*/
-
-#slide-4 {
-  p {
-    font-size: 100px;
-    line-height: 120px;
-    color: #333333;
-    text-align: center;
-    span {
-      color: #CC0000;
-    }
-  }
-  .split {
-    width: 400px;
-    margin: 60px auto 40px;
-    height: 4px;
-    background-color: #777777;
-  }
-}
-
-/*------   slide 5   ------*/
-
-#slide-5 {
-  pre {
-    font-size: 18px;
-    padding-left: 15px;
-    background-color: #FFFFFF;
-  }
-}
-
-
-
-

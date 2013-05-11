@@ -20,7 +20,7 @@
     var Slight = function(el) {
         this.$el = $(el);
         this.slides = this.initSlides('.slide');
-        this.currSlide = null;
+        this.currSlide = 0;
         this.viewMode = '';
         this.itemsInRow = 3;
         if(this.slides.length > 0) {
@@ -30,7 +30,7 @@
                 height: $slide.outerHeight(),
                 margin: 100
             };
-            this.toSlidshowView();
+            this.toSlidshowView(0);
             this.initWindowResize();
         }
     };
@@ -70,15 +70,19 @@
             var slideHeight = this.originalSlideSize.height + 2 * this.originalSlideSize.margin;
             return windowHeight/slideHeight;
         },
-        toSlidshowView: function() {
-            this.slides.forEach(function(slide, index) {
-                var angle = index == this.currSlide? 0 : getRandomAngle();
-                var windowHeight = window.innerHeight;
-                var windowWidth = window.innerWidth;
+        toSlidshowView: function(index) {
+            this.currSlide = index;
+            var windowHeight = window.innerHeight;
+            var windowWidth = window.innerWidth;
+            this.slides.forEach(function(slide, i) {
+                console.log([slide.$el, i == this.currSlide || i == this.currSlide + 1]);
+                var angle = i == this.currSlide || i == this.currSlide + 1 ? 0 :
+                        !slide.position.angle || slide.position.angle === 0 ? getRandomAngle() :
+                        slide.position.angle;
                 this.setSlidePosition(slide, {
-                    x: windowWidth/2,
+                    x: i < index ? windowWidth * 2 : windowWidth / 2,
                     y: windowHeight/2,
-                    z: this.slides.length - index,
+                    z: this.slides.length - i,
                     scale: windowHeight/(this.originalSlideSize.height +
                         2 * this.originalSlideSize.margin),
                     angle: angle
@@ -113,7 +117,8 @@
         },
         toggleViewMode: function() {
             if(this.viewMode == 'list') {
-                this.toSlidshowView();
+                this.toSlidshowView(this.currSlide);
+                //this.moveTo(this.currSlide);
             } else {
                 this.toListView();
             }
@@ -143,7 +148,7 @@
             }.bind(this));
         },
         shift: function(shift) {
-            this.moveTo(this.currSlide + shift);
+            this.toSlidshowView(this.currSlide + shift);
         },
         next: function() {
             this.shift(1);

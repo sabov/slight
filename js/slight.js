@@ -70,12 +70,11 @@
             var slideHeight = this.originalSlideSize.height + 2 * this.originalSlideSize.margin;
             return windowHeight/slideHeight;
         },
-        toSlidshowView: function(index) {
+        toSlideshowView: function(index) {
             this.currSlide = index;
             var windowHeight = window.innerHeight;
             var windowWidth = window.innerWidth;
             this.slides.forEach(function(slide, i) {
-                console.log([slide.$el, i == this.currSlide || i == this.currSlide + 1]);
                 var angle = i == this.currSlide || i == this.currSlide + 1 ? 0 :
                         !slide.position.angle || slide.position.angle === 0 ? getRandomAngle() :
                         slide.position.angle;
@@ -85,7 +84,8 @@
                     z: this.slides.length - i,
                     scale: windowHeight/(this.originalSlideSize.height +
                         2 * this.originalSlideSize.margin),
-                    angle: angle
+                    angle: angle,
+                    opacity: 1
                 });
             }.bind(this));
             this.viewMode = 'slideshow';
@@ -116,10 +116,14 @@
             this.viewMode = 'list';
         },
         toggleViewMode: function() {
+            console.log('toggle');
+            console.log(this);
+            console.log(this.viewMode);
             if(this.viewMode == 'list') {
-                this.toSlidshowView(this.currSlide);
-                //this.moveTo(this.currSlide);
+                console.log('slide');
+                this.toSlideshowView(this.currSlide);
             } else {
+                console.log('list');
                 this.toListView();
             }
         },
@@ -133,22 +137,11 @@
                         z: p.z
                     }) + scale(p.scale) +
                     rotate(p.angle),
-                opacity: '1'
+                opacity: p.opacity
             });
         },
-        moveTo: function(index) {
-            this.currSlide = index;
-            var windowWidth = window.innerWidth;
-            this.slides.forEach(function(slide, i) {
-                this.setSlidePosition(slide, {
-                    x: i < index ? windowWidth * 2 : windowWidth / 2,
-                    angle: i == this.currSlide || i == this.currSlide + 1 ? 0 : 
-                        slide.position.angle === 0 ? getRandomAngle() : slide.position.angle
-                });
-            }.bind(this));
-        },
         shift: function(shift) {
-            this.toSlidshowView(this.currSlide + shift);
+            this.toSlideshowView(this.currSlide + shift);
         },
         next: function() {
             this.shift(1);
@@ -157,10 +150,32 @@
             this.shift(-1);
         }
     };
+
+    var publicAPI = ['prev', 'next', 'toggleViewMode'];
+
+    $.fn.slight = function(method) {
+        return this.each(function (i, el) {
+            var $el = $(el);
+            var slight = $el.data('slight');
+            //var options = $.extend({}, defaults, typeof option == 'object' && option);
+            if(!slight) {
+                slight = new Slight($el);
+            }
+            //if(!slight) $el.data('slight', (slight = new Slight($el)));
+            if(publicAPI.indexOf(method) >= 0) slight[method]();
+        });
+    };
     $(function() {
-        S = new Slight('.slides');
-        $('.prevSlideBtn').on('click', S.prev.bind(S));
-        $('.nextSlideBtn').on('click', S.next.bind(S));
-        $('.toListView').on('click', S.toggleViewMode.bind(S));
+        var slides = $('.slides');
+        slides.slight();
+        $('.prevSlideBtn').on('click', function() {
+            slides.slight('prev');
+        });
+        $('.nextSlideBtn').on('click', function() {
+            slides.slight('next');
+        });
+        $('.toListView').on('click', function() {
+            slides.slight('toggleViewMode');
+        });
     });
 })();

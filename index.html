@@ -21,127 +21,124 @@
     </div>
 
     <div class="slides">
-      <div class="slides-holder">
-
-        <div id="slide-1" class="slide">
-          <img src="img/twitter.png" alt="" />
-          <h1>Twitter Flight</h1>
-        </div>
-
-        <div id="slide-2" class="slide">
-          <h1>JS ZOO</h1>
-          <img src="img/backbone.png" alt="" class="backbone" />
-          <img src="img/knockout.png" alt="" class="knockout" />
-          <img src="img/dojo.png" alt="" class="dojo" />
-          <img src="img/angular.png" alt="" class="angular" />
-          <img src="img/ember.png" alt="" class="ember" />
-        </div>
-
-        <div id="slide-3" class="slide">
-          <div class="row">
-            <img src="img/require.png" alt="" class="require" />
-            <span class="plus">+</span>
-            <div class="flight-logo">
-              <img src="img/twitter.png" alt="" />
-              <h2>Flight</h2>
-            </div>
-          </div>
-          <h1>Component</h1>
-          <div class="arrow advice-arrow">
-            <span></span>
-          </div>
-          <div class="arrow regstry-arrow">
-            <span></span>
-          </div>
-          <p class="advice">Advice</p>
-          <p class="regstry">Regstry</p>
-        </div>
-
-        <div id="slide-4" class="slide">
-          <h1>Аrchitecture</h1>
-          <p>
-            <span>[</span>
-              UI
-            <span>]</span>
-          </p>
-          <div class="split"></div>
-          <p>
-            <span>[</span>
-              Data
-            <span>]</span>
-          </p>
-        </div>
-
-        <div id="slide-5" class="slide">
-          <h1>Events</h1>
-          <h2>Handling</h2>
-          <pre class="prettyprint linenums">
-this.after("initialize", function() {
-  this.on("uiItemsRequested", this.serveMailItems);
-  this.on("dataItemsRefreshRequested", this.serveMailItems);
-});</pre>
-          <h2>Triggering</h2>
-          <pre class="prettyprint linenums">
-this.forwardMail = function(ev, data) {
-  this.trigger('uiForwardMail');
-};</pre>
-        </div>
-
-        <div id="slide-6" class="slide">
-          <h1>Features</h1>
-          <ul>
-            <li>mixins</li>
-            <li>cleanup</li>
-            <li>100% decouping</li>
-          </ul>
-       </div>
-
-        <div id="slide-7" class="slide">
-          <img src="img/cards.jpg" alt="" class="cards" />
-          <h2>Why events?</h2>
-        </div>
-
-        <div id="slide-8" class="slide">
-          <h1>Creating component</h1>
-          <pre class="prettyprint linenums">
-function attachTo(selector/*, options args */) {
-    if (!selector) {
-        throw new Error();
-    }
-
-    $(selector).each(function(i, node) {
-        new this(node, options);
-    }.bind(this));
-}</pre>
-        </div>
-
-        <div id="slide-9" class="slide">
-          <h1>Problems</h1>
-          <ul>
-            <li>limitation</li>
-            <li>events debug</li>
-            <li>no nesting</li>
-          </ul>
-        </div>
-
-        <div id="slide-10" class="slide">
-          <h1>Components collection</h1>
-          <img src="img/puzzle.jpg" alt="" />
-        </div>
-
-        <div id="slide-11" class="slide">
-          <h2>No framework is perfect,
-          <br/>
-          but we're getting there</h2>
-        </div>
-
-        <div id="slide-12" class="slide">
-          <h2>Thanks!</h2>
-          <a>http://sabov.github.com/<strong>flight.js-overview</strong></a>
-          <a>@alexsabov</a>
-        </div>
-
-      </div>
+    <div id="slide-1" class="slide">
+      <img src="img/twitter.png" alt="" />
+      <h1>Twitter Flight</h1>
     </div>
+
+    <div id="slide-2" class="slide">
+      <h1>JS ZOO</h1>
+      <img src="img/backbone.png" alt="" class="backbone" />
+      <img src="img/knockout.png" alt="" class="knockout" />
+      <img src="img/dojo.png" alt="" class="dojo" />
+      <img src="img/angular.png" alt="" class="angular" />
+      <img src="img/ember.png" alt="" class="ember" />
+    </div>
+
+    <div id="slide-3" class="slide">
+      <div class="row">
+        <img src="img/require.png" alt="" class="require" />
+        <span class="plus">+</span>
+        <div class="flight-logo">
+          <img src="img/twitter.png" alt="" />
+          <h2>Flight</h2>
+        </div>
+      </div>
+      <h1>Component</h1>
+      <div class="arrow advice-arrow">
+        <span></span>
+      </div>
+      <div class="arrow regstry-arrow">
+        <span></span>
+      </div>
+      <p class="advice">Advice</p>
+      <p class="regstry">Regstry</p>
+    </div>
+
+    <div id="slide-4" class="slide">
+      <h1>Аrchitecture</h1>
+      <p>
+        <span>[</span>
+          UI
+        <span>]</span>
+      </p>
+      <div class="split"></div>
+      <p>
+        <span>[</span>
+          Data
+        <span>]</span>
+      </p>
+    </div>
+
+    <div id="slide-5" class="slide">
+      <h1>Events</h1>
+      <h2>Handling</h2>
+      <pre class="prettyprint linenums">
+this.after("initialize", function() {
+this.on("uiItemsRequested", this.serveMailItems);
+this.on("dataItemsRefreshRequested", this.serveMailItems);
+});</pre>
+      <h2>Triggering</h2>
+      <pre class="prettyprint linenums">
+this.forwardMail = function(ev, data) {
+this.trigger('uiForwardMail');
+};</pre>
+    </div>
+
+    <div id="slide-6" class="slide">
+      <h1>Features</h1>
+      <ul>
+        <li>mixins</li>
+        <li>cleanup</li>
+        <li>100% decouping</li>
+      </ul>
+   </div>
+
+    <div id="slide-7" class="slide">
+      <img src="img/cards.jpg" alt="" class="cards" />
+      <h2>Why events?</h2>
+    </div>
+
+    <div id="slide-8" class="slide">
+      <h1>Creating component</h1>
+      <pre class="prettyprint linenums">
+function attachTo(selector/*, options args */) {
+if (!selector) {
+    throw new Error();
+}
+
+$(selector).each(function(i, node) {
+    new this(node, options);
+}.bind(this));
+}</pre>
+    </div>
+
+    <div id="slide-9" class="slide">
+      <h1>Problems</h1>
+      <ul>
+        <li>limitation</li>
+        <li>events debug</li>
+        <li>no nesting</li>
+      </ul>
+    </div>
+
+    <div id="slide-10" class="slide">
+      <h1>Components collection</h1>
+      <img src="img/puzzle.jpg" alt="" />
+    </div>
+
+    <div id="slide-11" class="slide">
+      <h2>No framework is perfect,
+      <br/>
+      but we're getting there</h2>
+    </div>
+
+    <div id="slide-12" class="slide">
+      <h2>Thanks!</h2>
+      <a>http://sabov.github.com/<strong>flight.js-overview</strong></a>
+      <a>@alexsabov</a>
+    </div>
+
+  </div>
   </body>
 </html>

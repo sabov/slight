@@ -7,14 +7,10 @@ html {
 .slides {
   height: 100%;
   width: 100%;
-}
-.slides-holder {
-  height: 100%;
-  width: 100%;
-  perspective: 500px;
   -webkit-perspective: 500;
   /* Safari and Chrome */
 
+  perspective: 500px;
 }
 .slide {
   transform-style: preserve-3d;
@@ -34,16 +30,6 @@ html {
   background: radial-gradient(ellipse at center, #ffffff 0%, #e0e0e0 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e0e0e0', GradientType=1);
   opacity: 0;
-  -webkit-transition: all ease-in-out 0.8s;
-  /* Safari and Chrome */
-
-  -moz-transition: all ease-in-out 0.8s;
-  /* Firefox 4 */
-
-  -o-transition: all ease-in-out 0.8s;
-  /* Opera */
-
-  transition: all ease-in-out 0.8s;
 }
 .slide h1 {
   font-size: 70px;

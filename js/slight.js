@@ -17,20 +17,58 @@
         return Math.floor((Math.random()*10)-6);
     };
 
-    var Slight = function(el) {
+    var transition = (function() {
+        var result;
+        var el = document.createElement('fakeelement');
+        var transitions = [
+          'transition',
+          'OTransition',
+          'MozTransition',
+          'WebkitTransition'
+        ];
+
+        transitions.forEach(function(t){
+            if(el.style[t] !== undefined){
+                result = t;
+            }
+        });
+        return result;
+    })();
+
+    var transitionEnd = {
+      'transition':'transitionend',
+      'OTransition':'oTransitionEnd',
+      'MozTransition':'transitionend',
+      'WebkitTransition':'webkitTransitionEnd'
+    }[transition];
+
+    /*   Config    */
+
+    var defaults = {
+        animationTime: '.8s',
+        animationType: 'ease-in-out',
+        margin: 100,
+        itemsInRow: 3,
+        firstSlide: 0,
+        slideSelector: '.slide'
+    };
+
+    var Slight = function(el, options) {
         this.$el = $(el);
-        this.slides = this.initSlides('.slide');
-        this.currSlide = 0;
+        this.options = options;
+        this.slides = this.initSlides(options.slideSelector);
+        this.currSlide = options.firstSlide;
         this.viewMode = '';
-        this.itemsInRow = 3;
+        this.itemsInRow = options.itemsInRow;
         if(this.slides.length > 0) {
             var $slide = this.slides[0].$el;
             this.originalSlideSize = {
                 width: $slide.outerWidth(),
                 height: $slide.outerHeight(),
-                margin: 100
+                margin: options.margin
             };
-            this.toSlidshowView(0);
+            this.toSlideshowView(0);
+            this.setAnimation();
             this.initWindowResize();
         }
     };
@@ -47,6 +85,15 @@
             });
             return slides;
         },
+        setAnimation: function() {
+            var animation = 'all ' + this.options.animationType + ' ' +
+                this.options.animationTime;
+            setTimeout(function() {
+                this.slides.forEach(function(slide) {
+                    slide.$el.css(transition, animation);
+                });
+            }.bind(this), 0);
+        },
         initWindowResize: function() {
             var tId;
             var self = this;
@@ -60,7 +107,8 @@
                 this.slides.forEach(function(slide) {
                     this.setSlidePosition(slide, {
                         scale: this.getWindowScale(),
-                        y: window.innerHeight/2
+                        y: window.innerHeight/2,
+                        x: window.innerWidth/2
                     });
                 }.bind(this));
             }
@@ -71,6 +119,11 @@
             return windowHeight/slideHeight;
         },
         toSlideshowView: function(index) {
+            if(index < 0 || index >= this.slides.length) {
+                return;
+            }
+
+            $('body').css('overflow', 'hidden');
             this.currSlide = index;
             var windowHeight = window.innerHeight;
             var windowWidth = window.innerWidth;
@@ -89,6 +142,7 @@
                 });
             }.bind(this));
             this.viewMode = 'slideshow';
+            this.setBodyStyle('overflow', 'hidden');
         },
         toListView: function() {
             var windowHeight = window.innerHeight;
@@ -114,18 +168,14 @@
                 left += shift;
             }.bind(this));
             this.viewMode = 'list';
+            this.setBodyStyle('overflow-y', 'scroll');
         },
-        toggleViewMode: function() {
-            console.log('toggle');
-            console.log(this);
-            console.log(this.viewMode);
-            if(this.viewMode == 'list') {
-                console.log('slide');
-                this.toSlideshowView(this.currSlide);
-            } else {
-                console.log('list');
-                this.toListView();
-            }
+        setBodyStyle: function(prop, value) {
+            this.slides[0].$el.on(transitionEnd, function() {
+                console.log([prop, value]);
+                $(this).off(transitionEnd);
+                $('body').css(prop, value);
+            });
         },
         setSlidePosition: function(slide, position) {
             var p = $.extend(slide.position, position);
@@ -140,29 +190,30 @@
                 opacity: p.opacity
             });
         },
-        shift: function(shift) {
-            this.toSlideshowView(this.currSlide + shift);
+        toggleViewMode: function() {
+            if(this.viewMode == 'list') {
+                this.toSlideshowView(this.currSlide);
+            } else {
+                this.toListView();
+            }
         },
         next: function() {
-            this.shift(1);
+            this.toSlideshowView(this.currSlide + 1);
         },
         prev: function() {
-            this.shift(-1);
+            this.toSlideshowView(this.currSlide - 1);
         }
     };
 
     var publicAPI = ['prev', 'next', 'toggleViewMode'];
 
-    $.fn.slight = function(method) {
+    $.fn.slight = function(arg) {
         return this.each(function (i, el) {
             var $el = $(el);
             var slight = $el.data('slight');
-            //var options = $.extend({}, defaults, typeof option == 'object' && option);
-            if(!slight) {
-                slight = new Slight($el);
-            }
-            //if(!slight) $el.data('slight', (slight = new Slight($el)));
-            if(publicAPI.indexOf(method) >= 0) slight[method]();
+            var options = $.extend({}, defaults, typeof arg == 'object' && arg);
+            if(!slight) $el.data('slight', (slight = new Slight($el, options)));
+            if(typeof arg == 'string' && publicAPI.indexOf(arg) >= 0) slight[arg]();
         });
     };
     $(function() {

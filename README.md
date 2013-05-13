@@ -1,4 +1,4 @@
-Slight - presentation engine
+**Slight** - javascript presentation engine
 ==================
 
 ### Installation

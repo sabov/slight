@@ -33,7 +33,7 @@ $('.slides').slight({
 ### API
 
 The ``Slight`` class provides a minimal JavaScript API for controlling
-navigation and reading state:
+navigation:
 
 ```javascript
 $('.slides').slight('prev');
@@ -50,7 +50,7 @@ Example of slide:
         <h2>Title<h2>
     </div>
 </div>
-```repository
+```
 
 ## License
 

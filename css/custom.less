@@ -2,6 +2,7 @@ body, html{
   background-color: #F0F0F0;
   height: 100%;
   min-height: 100%;
+  overflow: hidden;
 }
 
 .slides {
@@ -9,11 +10,12 @@ body, html{
   width: 100%;
   -webkit-perspective: 500; /* Safari and Chrome */
   perspective: 500px;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
 }
 
 .slide {
-  transform-style: preserve-3d;
-  position:absolute;
+  position: absolute;
   height: 600px;
   width: 800px;
   padding: 30px;
@@ -37,6 +39,11 @@ body, html{
     text-align: center;
     margin: 20px 0 80px;
   }
+}
+
+pre {
+    padding: 20px;
+
 }
 
 /*     presentation controls     */
@@ -289,7 +296,8 @@ body, html{
 
 #slide-8 {
   pre {
-    font-size: 25px;
+    font-size: 24px;
+    line-height: 30px;
     padding-left: 15px;
     background-color: #FFFFFF;
   }

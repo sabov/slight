@@ -82,7 +82,12 @@
                     $el: $(slide),
                     position: {}
                 });
-            });
+                $(slide).on('click', function() {
+                    if(this.viewMode == 'list') {
+                        this.toSlideshowView(index);
+                    }
+                }.bind(this));
+            }.bind(this));
             return slides;
         },
         setAnimation: function() {
@@ -104,11 +109,12 @@
         },
         refresh: function() {
             if(this.viewMode == 'slideshow') {
-                this.slides.forEach(function(slide) {
+                this.slides.forEach(function(slide, index) {
                     this.setSlidePosition(slide, {
                         scale: this.getWindowScale(),
                         y: window.innerHeight/2,
-                        x: window.innerWidth/2
+                        x: index < this.currSlide ? window.innerWidth * 2 :
+                            window.innerWidth / 2
                     });
                 }.bind(this));
             }
@@ -123,7 +129,6 @@
                 return;
             }
 
-            $('body').css('overflow', 'hidden');
             this.currSlide = index;
             var windowHeight = window.innerHeight;
             var windowWidth = window.innerWidth;
@@ -172,7 +177,6 @@
         },
         setBodyStyle: function(prop, value) {
             this.slides[0].$el.on(transitionEnd, function() {
-                console.log([prop, value]);
                 $(this).off(transitionEnd);
                 $('body').css(prop, value);
             });
@@ -205,6 +209,8 @@
         }
     };
 
+    /*      Export API     */
+
     var publicAPI = ['prev', 'next', 'toggleViewMode'];
 
     $.fn.slight = function(arg) {
@@ -216,17 +222,4 @@
             if(typeof arg == 'string' && publicAPI.indexOf(arg) >= 0) slight[arg]();
         });
     };
-    $(function() {
-        var slides = $('.slides');
-        slides.slight();
-        $('.prevSlideBtn').on('click', function() {
-            slides.slight('prev');
-        });
-        $('.nextSlideBtn').on('click', function() {
-            slides.slight('next');
-        });
-        $('.toListView').on('click', function() {
-            slides.slight('toggleViewMode');
-        });
-    });
 })();

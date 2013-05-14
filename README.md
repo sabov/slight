@@ -38,7 +38,7 @@ navigation:
 ```javascript
 $('.slides').slight('prev');
 $('.slides').slight('next');
-$('.slides').slight('toggleViewMode);
+$('.slides').slight('toggleViewMode');
 ```
 ### Markup
 
@@ -57,4 +57,3 @@ Example of slide:
 MIT licensed
 
 Author - Aleksandr Sabov (inspired by Impress and Reveal)
-
